@@ -20,7 +20,7 @@ class skypetest(unittest.TestCase):
         self.base_url = "https://www.skype.com"
         self.verificationErrors = []
         self.accept_next_alert = True
-        self.singInbuttonXpath = ".//*[@id='scom']/ul/li[14]/a/span"
+        self.singInbuttonXpath = ".//*[@id='scom']/ul/li[15]/a/span"
         self.logoXpath  = ".//*[@id='scom']/ul/li[1]/a/span"
         self.userFieldId = "username"
         self.passFieldId = "password"
@@ -60,7 +60,7 @@ class skypetest(unittest.TestCase):
     def test3_emptySubmit(self):
         time.sleep(1)
         driver = self.driver
-        errorXpath = ".//*[@id='content']/div[1]"
+        errorXpath = ".//*[@id='container']/div/div/div[1]/div[1]/span"
         engTxt  = "You did not enter your Skype Name."
         driver.get(self.base_url + "/en/")
         driver.set_window_size(800, 600)
