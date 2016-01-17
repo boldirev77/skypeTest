@@ -41,9 +41,8 @@ class SkypeTest(unittest.TestCase):
         singInbuttonXpath = self.singInbuttonXpath
 
         #start https://www.skype.com/en/
-        #Verify if the Sing In button is present
+        #Verify if the Sing In button is present and title is correct
         self.driver.find_element_by_xpath(logoXpath)
-        #self.driver.find_element_by_xpath(singInbuttonXpath)
         assert(self.driver.find_element_by_xpath(singInbuttonXpath).text) == 'Sign in'
 
     def test2_clickButton(self):
