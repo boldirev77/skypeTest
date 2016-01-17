@@ -1,98 +1,92 @@
+'''
+    File name:
+    Author: Aleksander Boldyrev
+    Python Version: 3.4
+'''
+
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import unittest
 import HTMLTestRunner
 import time
+import datetime
+import sys
+import os
 
 
-class skypetest(unittest.TestCase):
-    def setUp(self):
-        #self.driver = webdriver.Chrome()
-        descap = dict(DesiredCapabilities.PHANTOMJS)
+class SkypeTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.driver = webdriver.Firefox()
+        '''descap = dict(DesiredCapabilities.PHANTOMJS)
         descap["phantomjs.page.settings.userAgent"] = (
             "Mozilla/5.0 (iPad; CPU OS 4_3_5 like Mac OS X; en-us) AppleWebKit/533.17.9 \
             (KHTML, like Gecko) Version/5.0.2 Mobile/8L1 Safari/6533.18.5"
-        )
-        self.driver = webdriver.PhantomJS()
+        )'''
+        #self.driver = webdriver.PhantomJS()
 
-        self.driver.implicitly_wait(15)
-        self.base_url = "https://www.skype.com"
-        self.verificationErrors = []
-        self.accept_next_alert = True
-        self.singInbuttonXpath = ".//*[@id='scom']/ul/li[15]/a/span"
-        self.logoXpath  = ".//*[@id='scom']/ul/li[1]/a/span"
-        self.userFieldId = "username"
-        self.passFieldId = "password"
-        self.signmebuttonId = "signIn"
+        cls.driver.implicitly_wait(15)
+        cls.driver.maximize_window()
+        cls.driver.get("https://www.skype.com/en/")
+        cls.driver.title
+
+        cls.singInbuttonXpath = ".//*[@id='scom']/ul/li[15]/a/span"
+        cls.userFieldId = "username"
+        cls.passFieldId = "password"
+        cls.signmebuttonId = "signIn"
 
     def test1_openpage(self):
         time.sleep(1)
-        driver = self.driver
-        driver.get(self.base_url + "/en/")
-        driver.set_window_size(800, 600)
+        logoXpath  = ".//*[@id='scom']/ul/li[1]/a/span"
 
         #start https://www.skype.com/en/
         #Verify if the Sing In button is present
-
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath(self.singInbuttonXpath))
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath(self.logoXpath))
-        driver.close()
+        self.driver.find_element_by_xpath(logoXpath)
+        self.driver.find_element_by_xpath(self.singInbuttonXpath)
 
     def test2_clickButton(self):
         time.sleep(1)
-        driver = self.driver
-        driver.get(self.base_url + "/en/")
-        driver.set_window_size(800, 600)
 
-        #start https://www.skype.com/en/
-        #Verify if the Sing In button is present
         #Click on Sign In button
         #Verify if the Username field is present
         #Verify if the Password field is present
-
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath(self.singInbuttonXpath))
-        driver.find_element_by_xpath(self.singInbuttonXpath).click()
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_id(self.userFieldId))
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_id(self.passFieldId))
-        driver.close()
+        self.driver.find_element_by_xpath(self.singInbuttonXpath).click()
+        self.driver.find_element_by_id(self.userFieldId)
+        self.driver.find_element_by_id(self.passFieldId)
 
     def test3_emptySubmit(self):
         time.sleep(1)
-        driver = self.driver
         errorXpath = ".//*[@id='container']/div/div/div[1]/div[1]/span"
         engTxt  = "You did not enter your Skype Name."
-        driver.get(self.base_url + "/en/")
-        driver.set_window_size(800, 600)
 
-        #start https://www.skype.com/en/
-        #Verify if the Sing In button is present
-        #Click on Sign In button
-        #Verify if the Username field is present
-        #Verify if the Password field is present
         #Clear Username field
         #Clear Password field
         #Verify if the ERROR message appears
         #Checke the Text of ERROR message 'You did not enter your Skype Name.'
+        self.driver.find_element_by_id(self.userFieldId).clear()
+        self.driver.find_element_by_id(self.passFieldId).clear()
+        self.driver.find_element_by_id(self.signmebuttonId).click()
+        self.driver.find_element_by_xpath(errorXpath)
+        assert(self.driver.find_element_by_xpath(errorXpath)).text == engTxt
 
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath(self.singInbuttonXpath))
-        driver.find_element_by_xpath(self.singInbuttonXpath).click()
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_id(self.signmebuttonId))
-        driver.find_element_by_id(self.userFieldId).clear()
-        driver.find_element_by_id(self.passFieldId).clear()
-        driver.find_element_by_id(self.signmebuttonId).click()
-        WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath(errorXpath))
-        assert(driver.find_element_by_xpath(errorXpath)).text == engTxt
-        driver.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()
+
+if __name__ == '__main__':
+
+    user_input = input('Create HTML report yes(y)/no(n) ???  : ').lower()
+
+    if user_input == 'y':
+        suite = unittest.TestLoader().loadTestsFromTestCase(SkypeTest)
+        unittest.TextTestRunner(verbosity=3)
+        with open(time.strftime('%Y-%m-%d_%H_%M') + "Test_results.html","w") as f:
+            runner = HTMLTestRunner.HTMLTestRunner(stream=f,title='Test Report',description='Demo HTMLTestResults')
+            runner.run(suite)
+
+    elif user_input == 'n':
+        unittest.main(verbosity=3)
+
+    else: sys.stdout.write("! Invalid input ! -  " + user_input)
 
 
-    def tearDown(self):
-        self.driver.quit()
-
-
-# if __name__ == '__main__':
-#     suite = unittest.TestLoader().loadTestsFromTestCase(skypetest)
-#     unittest.TextTestRunner(verbosity=0).run(suite)
-
-if __name__ == "__main__":
-    HTMLTestRunner.main()
