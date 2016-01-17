@@ -30,7 +30,7 @@ class SkypeTest(unittest.TestCase):
         cls.driver.get("https://www.skype.com/en/")
         cls.driver.title
 
-        cls.singInbuttonXpath = ".//*[@id='scom']/ul/li[15]/a/span"
+        cls.singInbuttonXpath = "//a[@class='btn primaryNegativeCta small']/span"
         cls.userFieldId = "username"
         cls.passFieldId = "password"
         cls.signmebuttonId = "signIn"
@@ -38,21 +38,31 @@ class SkypeTest(unittest.TestCase):
     def test1_openpage(self):
         time.sleep(1)
         logoXpath  = ".//*[@id='scom']/ul/li[1]/a/span"
+        singInbuttonXpath = self.singInbuttonXpath
 
         #start https://www.skype.com/en/
         #Verify if the Sing In button is present
         self.driver.find_element_by_xpath(logoXpath)
-        self.driver.find_element_by_xpath(self.singInbuttonXpath)
+        #self.driver.find_element_by_xpath(singInbuttonXpath)
+        assert(self.driver.find_element_by_xpath(singInbuttonXpath).text) == 'Sign in'
 
     def test2_clickButton(self):
         time.sleep(1)
+        username_text = 'Skype name, email or phone number'
+        username_text_locator = ".//div[@class='fieldRow inputField']/label"
+        password_text = 'Password'
+        password_text_locator = "//div[@class='fieldRow inputField hideOnMsa']/label"
 
         #Click on Sign In button
         #Verify if the Username field is present
+        #Verify whether the titles of input boxes are correct (for username and Password)
         #Verify if the Password field is present
         self.driver.find_element_by_xpath(self.singInbuttonXpath).click()
         self.driver.find_element_by_id(self.userFieldId)
+        assert(self.driver.find_element_by_xpath(username_text_locator).text) == username_text
         self.driver.find_element_by_id(self.passFieldId)
+        assert(self.driver.find_element_by_xpath(password_text_locator).text) == password_text
+
 
     def test3_emptySubmit(self):
         time.sleep(1)
