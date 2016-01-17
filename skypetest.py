@@ -80,7 +80,7 @@ if __name__ == '__main__':
     if user_input == 'y':
         suite = unittest.TestLoader().loadTestsFromTestCase(SkypeTest)
         unittest.TextTestRunner(verbosity=3)
-        with open(time.strftime('%Y-%m-%d_%H_%M') + "Test_results.html","w") as f:
+        with open(time.strftime('%Y-%m-%d_%H_%M') + "_Test_results.html","w") as f:
             runner = HTMLTestRunner.HTMLTestRunner(stream=f,title='Test Report',description='Demo HTMLTestResults')
             runner.run(suite)
 
