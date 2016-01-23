@@ -8,9 +8,7 @@ from selenium import webdriver
 import unittest
 import HTMLTestRunner
 import time
-import datetime
 import sys
-import os
 
 
 class SkypeTest(unittest.TestCase):
@@ -39,11 +37,13 @@ class SkypeTest(unittest.TestCase):
         time.sleep(1)
         logoXpath  = ".//*[@id='scom']/ul/li[1]/a/span"
         singInbuttonXpath = self.singInbuttonXpath
+        # start https://www.skype.com/en/
+        # Verify if the Sing In button is present and title is correct
 
-        #start https://www.skype.com/en/
-        #Verify if the Sing In button is present and title is correct
         self.driver.find_element_by_xpath(logoXpath)
-        assert(self.driver.find_element_by_xpath(singInbuttonXpath).text) == 'Sign in'
+        assert(self.driver.find_element_by_xpath
+               (singInbuttonXpath).text) == 'Sign in'
+        print(self._testMethodName, "   pass")
 
     def test2_clickButton(self):
         time.sleep(1)
@@ -51,32 +51,41 @@ class SkypeTest(unittest.TestCase):
         username_text_locator = ".//div[@class='fieldRow inputField']/label"
         password_text = 'Password'
         password_text_locator = "//div[@class='fieldRow inputField hideOnMsa']/label"
+        # Click on Sign In button
+        # Verify if the Username field is present
+        # Verify whether the titles of input boxes are correct (for username and Password)
+        # Verify if the Password field is present
 
-        #Click on Sign In button
-        #Verify if the Username field is present
-        #Verify whether the titles of input boxes are correct (for username and Password)
-        #Verify if the Password field is present
         self.driver.find_element_by_xpath(self.singInbuttonXpath).click()
         self.driver.find_element_by_id(self.userFieldId)
-        assert(self.driver.find_element_by_xpath(username_text_locator).text) == username_text
+        assert(self.driver.find_element_by_xpath
+               (username_text_locator).text) == username_text
         self.driver.find_element_by_id(self.passFieldId)
-        assert(self.driver.find_element_by_xpath(password_text_locator).text) == password_text
-
+        assert(self.driver.find_element_by_xpath
+               (password_text_locator).text) == password_text
+        print(self._testMethodName, "   pass")
 
     def test3_emptySubmit(self):
         time.sleep(1)
         errorXpath = ".//*[@id='container']/div/div/div[1]/div[1]/span"
-        engTxt  = "You did not enter your Skype Name."
+        englTxt  = "You did not enter your Skype Name."
+        # Clear Username field
+        # Clear Password field
+        # Verify if the ERROR message appears
+        # Check the Text of ERROR message 'You did not enter your Skype Name.'
 
-        #Clear Username field
-        #Clear Password field
-        #Verify if the ERROR message appears
-        #Checke the Text of ERROR message 'You did not enter your Skype Name.'
         self.driver.find_element_by_id(self.userFieldId).clear()
         self.driver.find_element_by_id(self.passFieldId).clear()
         self.driver.find_element_by_id(self.signmebuttonId).click()
         self.driver.find_element_by_xpath(errorXpath)
-        assert(self.driver.find_element_by_xpath(errorXpath)).text == engTxt
+        assert(self.driver.find_element_by_xpath(errorXpath)).text == englTxt
+        print(self._testMethodName, "   pass")
+
+    def test4_getattribute(self):
+        # if the checkbox is checked.
+        # change value to 'off' if you want to pass this test
+        assert(self.driver.find_element_by_id('persistent').get_attribute('autocomplete')) == 'on'
+        print(self._testMethodName, "   pass")
 
     @classmethod
     def tearDownClass(cls):
@@ -84,7 +93,7 @@ class SkypeTest(unittest.TestCase):
 
 if __name__ == '__main__':
 
-    user_input = input('Create HTML report yes(y)/no(n) ???  : ').lower()
+    user_input = input('Create HTML report ??? yes(y)/no(n)  : ').lower()
 
     if user_input == 'y':
         suite = unittest.TestLoader().loadTestsFromTestCase(SkypeTest)
